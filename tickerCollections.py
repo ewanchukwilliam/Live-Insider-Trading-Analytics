@@ -29,6 +29,7 @@ class tickerCollection:
         listData = []
         for data in jsonData:
             listData.append(tickerInfo(data))
+            print(data)
         return listData
     
 
