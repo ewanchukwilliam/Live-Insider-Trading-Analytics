@@ -11,3 +11,7 @@ pricing/*
 logging/*
 terraform/terraform.tfvars
 .envserver
+terraform/.terraform/providers/registry.terraform.io/bpg/proxmox/0.106.0/linux_amd64
+terraform/.terraform/providers/registry.terraform.io/bpg/proxmox/0.106.0/linux_amd64
+terraform/.terraform.lock.hcl
+terraform/terraform.tfstate
