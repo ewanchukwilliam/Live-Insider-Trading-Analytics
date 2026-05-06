@@ -5,7 +5,7 @@
 set -euo pipefail
 
 # Configuration
-PROJECT_DIR="/home/williamewanchuk/Personal/RandomScripts/queries/insidertrading"
+PROJECT_DIR="/app"
 WRAPPER_LOG="${PROJECT_DIR}/logging/cron_wrapper.log"
 LOCK_FILE="${PROJECT_DIR}/logging/pipeline.lock"
 

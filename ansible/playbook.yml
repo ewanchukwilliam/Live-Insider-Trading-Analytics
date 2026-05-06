@@ -34,6 +34,14 @@
         version: main
         force: yes
 
+    - name: schedule pipeline cron job
+      cron:
+        name: "insider trading pipeline"
+        minute: "0"
+        hour: "*"
+        job: "/app/run_pipeline.sh >> /app/logging/cron_wrapper.log 2>&1"
+        user: root
+
     - name: install lazydocker
       shell: |
         curl -Lo /tmp/lazydocker.tar.gz "https://github.com/jesseduffield/lazydocker/releases/download/v0.23.3/lazydocker_0.23.3_Linux_x86_64.tar.gz"
