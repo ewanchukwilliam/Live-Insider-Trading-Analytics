@@ -29,7 +29,7 @@ provider "proxmox" {
 
 resource "proxmox_virtual_environment_container" "debian" {
   node_name    = "plex" # your proxmox node name
-  unprivileged = false
+  unprivileged = true
 
   initialization {
     hostname = "cron-container"
