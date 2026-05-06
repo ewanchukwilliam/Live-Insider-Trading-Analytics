@@ -1,5 +1,12 @@
 - hosts: app
   become: true
+  gather_facts: false
+  pre_tasks:
+    - name: wait for container to be reachable
+      wait_for_connection:
+        timeout: 60
+    - name: gather facts
+      setup:
   tasks:
     - name: install packages
       apt:

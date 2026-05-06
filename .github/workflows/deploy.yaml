@@ -39,7 +39,6 @@ jobs:
       - name: Run Ansible
         run: ansible-playbook -i ansible/inventory.ini ansible/playbook.yml
         env:
-          ANSIBLE_PRIVATE_KEY_FILE: ${{ secrets.SSH_PRIVATE_KEY }}
           SSH_PUBLIC_KEY: ${{ secrets.SSH_PUBLIC_KEY }}
 
   deploy:
