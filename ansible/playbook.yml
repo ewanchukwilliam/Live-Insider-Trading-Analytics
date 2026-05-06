@@ -34,6 +34,15 @@
         version: main
         force: yes
 
+    - name: schedule db backup cron job
+      cron:
+        name: "postgres db backup"
+        minute: "0"
+        hour: "2"
+        day: "*/2"
+        job: "/app/backup.sh"
+        user: root
+
     - name: schedule pipeline cron job
       cron:
         name: "insider trading pipeline"
