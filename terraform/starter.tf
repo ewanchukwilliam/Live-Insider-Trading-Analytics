@@ -3,13 +3,12 @@ terraform {
   required_providers {
     proxmox = {
       source  = "bpg/proxmox"
-      version = "~> 0.98"
+      version = "~> 0.73"
     }
   }
 }
 
 variable "virtual_environment_endpoint" { type = string }
-variable "virtual_environment_username" { type = string }
 variable "virtual_environment_password" { type = string }
 variable "ssh_public_key" { type = string }
 variable "container_ip" { type = string }
@@ -18,7 +17,7 @@ variable "container_ip" { type = string }
 provider "proxmox" {
 
   endpoint = var.virtual_environment_endpoint
-  username = var.virtual_environment_username
+  username = "root@pam"
   password = var.virtual_environment_password
   insecure = true
 
