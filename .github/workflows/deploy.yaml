@@ -36,19 +36,6 @@ jobs:
           echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_ed25519
           chmod 600 ~/.ssh/id_ed25519
           ssh-keyscan -p 2222 $DESKTOP_IP >> ~/.ssh/known_hosts
-      - name: Create backup directory on Proxmox host
-        uses: appleboy/ssh-action@master
-        with:
-          host: 192.168.1.50
-          username: root
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          proxy_host: ${{ env.DESKTOP_IP }}
-          proxy_port: 2222
-          proxy_username: ${{ env.DESKTOP_USER }}
-          proxy_key: ${{ secrets.SSH_PRIVATE_KEY }}
-          script: |
-            mkdir -p /mnt/storage/insidertrading/db-backups
-            chown -R 100000:100000 /mnt/storage/insidertrading/db-backups
       - name: Run Ansible
         run: ansible-playbook -i ansible/inventory.ini ansible/playbook.yml
         env:
