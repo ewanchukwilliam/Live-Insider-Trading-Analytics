@@ -1,0 +1,81 @@
+name: Deploy
+on:
+  push:
+    branches: [main]
+
+jobs:
+  terraform:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Load secrets
+        run: echo "${{ secrets.ENVSERVER }}" >> $GITHUB_ENV
+      - name: Terraform Apply
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ env.DESKTOP_IP }}
+          port: 2222
+          username: ${{ env.DESKTOP_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            cd ~/Personal/RandomScripts/queries/insidertrading/terraform
+            terraform apply -auto-approve
+
+  provision:
+    needs: terraform
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Load secrets
+        run: echo "${{ secrets.ENVSERVER }}" >> $GITHUB_ENV
+      - name: Install Ansible
+        run: pip install ansible
+      - name: Setup SSH Keys
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_ed25519
+          chmod 600 ~/.ssh/id_ed25519
+          ssh-keyscan -p 2222 $DESKTOP_IP >> ~/.ssh/known_hosts
+      - name: Create backup directory on Proxmox host
+        uses: appleboy/ssh-action@master
+        with:
+          host: 192.168.1.50
+          username: root
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          proxy_host: ${{ env.DESKTOP_IP }}
+          proxy_port: 2222
+          proxy_username: ${{ env.DESKTOP_USER }}
+          proxy_key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            mkdir -p /mnt/storage/insidertrading/db-backups
+            chown -R 100000:100000 /mnt/storage/insidertrading/db-backups
+      - name: Run Ansible
+        run: ansible-playbook -i ansible/inventory.ini ansible/playbook.yml
+        env:
+          ANSIBLE_PRIVATE_KEY_FILE: ${{ secrets.SSH_PRIVATE_KEY }}
+          SSH_PUBLIC_KEY: ${{ secrets.SSH_PUBLIC_KEY }}
+
+  deploy:
+    needs: provision
+    runs-on: ubuntu-latest
+    steps:
+      - name: Load secrets
+        run: echo "${{ secrets.ENVSERVER }}" >> $GITHUB_ENV
+      - name: Deploy
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ env.SERVER_IP }}
+          username: root
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          proxy_host: ${{ env.DESKTOP_IP }}
+          proxy_port: 2222
+          proxy_username: ${{ env.DESKTOP_USER }}
+          proxy_key: ${{ secrets.SSH_PRIVATE_KEY }}
+          envs: ENV_FILE
+          script: |
+            echo "$ENV_FILE" > /app/.env
+            cd /app
+            git pull
+            docker-compose -f docker-compose.yaml -f docker-compose.prod.yaml up -d --build
+            docker image prune -f
+        env:
+          ENV_FILE: ${{ secrets.ENV_FILE }}

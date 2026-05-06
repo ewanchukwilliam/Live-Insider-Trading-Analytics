@@ -9,3 +9,5 @@ graphs/*
 options/*
 pricing/*
 logging/*
+terraform/terraform.tfvars
+.envserver

@@ -1,0 +1,14 @@
+version: '3.8'
+services:
+  postgres:
+    volumes:
+      - /mnt/backups/pgdata:/var/lib/postgresql/data
+
+  trackingcontainer:
+    volumes:
+      - ./data:/app/data
+      - ./pricing:/app/pricing
+      - ./options:/app/options
+      - ./graphs:/app/graphs
+      - ./errors:/app/errors
+      - ./logging:/app/logging
