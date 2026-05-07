@@ -6,6 +6,7 @@ set -euo pipefail
 
 # Configuration
 PROJECT_DIR="/app"
+export COMPOSE_FILE=docker-compose.yaml:docker-compose.prod.yaml
 WRAPPER_LOG="${PROJECT_DIR}/logging/cron_wrapper.log"
 LOCK_FILE="${PROJECT_DIR}/logging/pipeline.lock"
 

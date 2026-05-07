@@ -51,6 +51,12 @@
         job: "/app/run_pipeline.sh >> /app/logging/cron_wrapper.log 2>&1"
         user: root
 
+    - name: set COMPOSE_FILE for prod
+      lineinfile:
+        path: /root/.bashrc
+        line: 'export COMPOSE_FILE=docker-compose.yaml:docker-compose.prod.yaml'
+        state: present
+
     - name: install lazydocker
       shell: |
         curl -Lo /tmp/lazydocker.tar.gz "https://github.com/jesseduffield/lazydocker/releases/download/v0.23.3/lazydocker_0.23.3_Linux_x86_64.tar.gz"

@@ -6,6 +6,7 @@ set -euo pipefail
 
 PROJECT_DIR="/app"
 BACKUP_DIR="/mnt/backups"
+export COMPOSE_FILE=docker-compose.yaml:docker-compose.prod.yaml
 LOG_FILE="${PROJECT_DIR}/logging/backup.log"
 
 log() {
